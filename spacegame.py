@@ -32,7 +32,7 @@ def bullet_fire():
     bullet.append(rect)
 asteriods=[]
 bullet=[]
-bullet_width,bullet_height= 8,16
+bullet_width,bullet_height= 8,12
 bullet_speed=12
 for i in range(5):
     asteriods.append(create_rock())
@@ -61,6 +61,8 @@ while running:
         asteriod["y"] += asteriod["speed"]
         if asteriod["y"] > height:
             reeset_asteriod(asteriod)
+    for b in bullet[:]:
+        b.y-=bullet_speed
 
     if asteriod["y"]>=height:
             asteriod["x"]=random.randint(0,width-200)
@@ -71,6 +73,9 @@ while running:
     screen.blit(player,(player_x,player_y))
     for asteriod in asteriods:
         screen.blit(asteriod_img,(asteriod["x"],asteriod["y"]))
+    for b in bullet:
+        pygame.draw.rect(screen,(255,220,0),b)
+    
     
     pygame.display.update()
 pygame.quit()
