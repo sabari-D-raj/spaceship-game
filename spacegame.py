@@ -3,6 +3,9 @@ import sys
 import random
 
 pygame.init()
+pygame.mixer.init()
+pygame.mixer.music.load("musics/fearless.mp3")
+pygame.mixer.music.play(-1)
 fps=pygame.time.Clock()
 width,height=800,800
 screen=pygame.display.set_mode((width,height))
@@ -75,7 +78,6 @@ while running:
         screen.blit(asteriod_img,(asteriod["x"],asteriod["y"]))
     for b in bullet:
         pygame.draw.rect(screen,(255,220,0),b)
-    
     
     pygame.display.update()
 pygame.quit()
