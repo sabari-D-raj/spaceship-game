@@ -33,6 +33,12 @@ def bullet_fire():
     bullety=player_y
     rect=pygame.Rect(bulletx,bullety,bullet_width,bullet_height)
     bullet.append(rect)
+laser=pygame.mixer.Sound("musics/lasergun.mp3")
+destroy_a=pygame.mixer.Sound("musics/explosion.mp3")
+def bullet_sound():
+    laser.play()
+def destroying():
+    destroy_a.play()
 asteriods=[]
 bullet=[]
 bullet_width,bullet_height= 8,12
@@ -45,6 +51,10 @@ while running:
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
             running=False
+        if event.type==pygame.KEYDOWN:
+            if event.key==pygame.K_SPACE:
+                bullet_fire()
+                bullet_sound() 
     bg_visible+=bg_speed
     bg_above+=bg_speed
     if bg_visible>=height:
@@ -56,8 +66,6 @@ while running:
         player_x+=5
     if key[pygame.K_a]:
         player_x-=5
-    if key[pygame.K_SPACE]:
-        bullet_fire() 
     if player_x>=800 or player_x<=0:
         print("out")
     for asteriod in asteriods:
