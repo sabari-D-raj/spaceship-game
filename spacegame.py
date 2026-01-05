@@ -17,9 +17,7 @@ player=pygame.transform.scale(player,(100,100))
 asteriod_img=pygame.image.load("images/asteriod.png").convert_alpha()
 asteriod_img=pygame.transform.scale(asteriod_img,(200,200))
 player_x,player_y=350,690
-player_rect=pygame.Rect(player_x,player_y,100,100)
 bg_visible,bg_above,bg_speed =0,-height,3
-paused=False
 def create_rock():
     return {
         "x":random.randint(0,width-200),
@@ -35,6 +33,22 @@ def bullet_fire():
     bullety=player_y
     rects=pygame.Rect(bulletx,bullety,bullet_width,bullet_height)
     bullet.append(rects)
+def paused_menu():
+    font=pygame.font.SysFont("Arial",30)
+    overlay = pygame.Surface((width, height), pygame.SRCALPHA)
+    screen.blit(overlay, (0, 0))
+    text = font.render("gameover", True, (255, 255, 255))
+    info = font.render("Press P to Resume    Q to Quit", True, (255, 255, 255))
+    screen.blit(text, text.get_rect(center=(width// 2,height // 2 - 20)))
+    screen.blit(info, info.get_rect(center=(width// 2,height // 2 + 30)))
+def gameover_menu():
+    font=pygame.font.SysFont("Arial",30)
+    overlay = pygame.Surface((width, height), pygame.SRCALPHA)
+    screen.blit(overlay, (0, 0))
+    text = font.render("paused", True, (255, 255, 255))
+    info = font.render(" Q to Quit", True, (255, 255, 255))
+    screen.blit(text, text.get_rect(center=(width// 2,height // 2 - 20)))
+    screen.blit(info, info.get_rect(center=(width// 2,height // 2 + 30)))
 asteriods_pos=create_rock() 
 laser=pygame.mixer.Sound("musics/lasergun.mp3")
 destroy_a=pygame.mixer.Sound("musics/explosion.mp3")
@@ -52,6 +66,8 @@ bullet_speed=12
 for i in range(5):
     asteriods.append(create_rock())
 running=True
+pasued=False
+gameover1=False
 while running:
     fps.tick(60)
     asteriod_rect=pygame.Rect(asteriods_pos["x"],asteriods_pos["y"],200,200)
@@ -61,7 +77,12 @@ while running:
         if event.type==pygame.KEYDOWN:
             if event.key==pygame.K_SPACE:
                 bullet_fire()
-                bullet_sound() 
+                bullet_sound()
+        if event.type==pygame.KEYDOWN:
+            if event.key==pygame.K_p:
+                pasued=not pasued
+            if pasued  and event.key==pygame.K_q:
+                running=False
     bg_visible+=bg_speed
     bg_above+=bg_speed
     if bg_visible>=height:
@@ -100,12 +121,19 @@ while running:
                 bullet.remove(b)
                 reeset_asteriod(asteriod)
                 break
-    for asteriod in asteriods:
+    player_rect=pygame.Rect(player_x,player_y,100,100)
+    for asteriod in asteriods[:]:
         asteriod_rect=pygame.Rect(asteriod["x"],asteriod["y"],200,200)
         if player_rect.colliderect(asteriod_rect):
+            gameover1=True
+            pygame.mixer.music.stop()
             gameover.play()
-            running=False
-
+    if pasued:
+        paused_menu()       
+            
+    if gameover1:
+        gameover_menu()
+        
 
     pygame.display.update()
 pygame.quit()
